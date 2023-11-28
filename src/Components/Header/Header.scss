@@ -1,0 +1,38 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #020203; // Or any color according to the design
+    padding: 0 20px; // Adjust the padding as necessary
+
+    &__logo {
+        width: 200px; // Set the width according to the size in the design
+        height: auto;
+    }
+
+    &__nav {
+        // Styles for the navigation
+    }
+
+    &__nav-list {
+        list-style: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__nav-item {
+        margin-left: 40px; // Space between the nav items
+    }
+
+    &__nav-link {
+        text-decoration: none;
+        color: white; // Or the color according to the design
+        font-size: 18px; // Adjust font size as necessary
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: #e60000; // Hover effect color change
+        }
+    }
+}

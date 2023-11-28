@@ -1,59 +1,75 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import localData from '../datas/data.json';
 import { useNavigate } from 'react-router-dom';
 
 const DataContext = createContext();
 
+export const useData = () => useContext(DataContext);
+
+const normalizeUserData = (userData) => {
+  if (userData.hasOwnProperty('score')) {
+    userData.todayScore = userData.score;
+    delete userData.score;
+  }
+  return userData;
+};
+
 export const DataProvider = ({ children }) => {
-  const [data, setData] = useState([]);
-  const [useApi, setUseApi] = useState(false);
+  const [data, setData] = useState({});
+  const [useApi, setUseApi] = useState(true);
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
+
+  const fetchData = async (endpoint, localPath) => {
+    let responseData;
+    if (useApi) {
+      const response = await axios.get(`http://localhost:3000/${endpoint}`);
+      responseData = response.data;
+    } else {
+      const localData = await import(`../datas/${localPath}`);
+      responseData = localData.default;
+    }
+    if (responseData && responseData.data) {
+      responseData.data = normalizeUserData(responseData.data);
+    }
+    return responseData;
+  };
+
+  const fetchUserBasicInfo = (id) => fetchData(`user/${id}`, `user_${id}.json`);
+  const fetchUserActivity = (id) => fetchData(`user/${id}/activity`, `user_${id}_activity.json`);
+  const fetchUserAverageSessions = (id) => fetchData(`user/${id}/average-sessions`, `user_${id}_average-sessions.json`);
+  const fetchUserPerformance = (id) => fetchData(`user/${id}/performance`, `user_${id}_performance.json`);
+
+  useEffect(() => {
+    if (userId) {
+      Promise.all([
+        fetchUserBasicInfo(userId),
+        fetchUserActivity(userId),
+        fetchUserAverageSessions(userId),
+        fetchUserPerformance(userId)
+      ]).then(([basicInfo, activity, averageSessions, performance]) => {
+        setData({ basicInfo, activity, averageSessions, performance });
+      }).catch(error => {
+        console.error("Failed to fetch data:", error);
+      });
+    }
+  }, [userId, useApi]);
+
+  const toggleDataSource = () => {
+    setUseApi(!useApi);
+    console.log(`Data source will be toggled. Current source: ${useApi ? 'API' : 'local JSON'}.`);
+  };
 
   const selectUser = (id) => {
     setUserId(id);
     navigate(`/user/${id}`);
   };
 
-  const [userId, setUserId] = useState(null);
-
-  const toggleDataSource = () => {
-    setUseApi(!useApi);
-  };
-
-  const fetchUserDataFromApi = async (id) => {
-    try {
-      const response = await axios.get(`http://localhost:3000/user/${id}`);
-      setData(response.data);
-    } catch (error) {
-      console.error('Error fetching data from API:', error);
-    }
-  };
-
-  const getUserDataFromJson = (id) => {
-    const userData = localData.users.find(user => user.userId === id);
-    if (userData) {
-      setData(userData);
-    } else {
-      console.error('User not found in local data');
-    }
-  };
-
-  useEffect(() => {
-    if (userId) {
-      if (useApi) {
-        fetchUserDataFromApi(userId);
-      } else {
-        getUserDataFromJson(userId);
-      }
-    }
-  }, [userId, useApi]);
-
   return (
-    <DataContext.Provider value={{ data, selectUser, toggleDataSource }}>
+    <DataContext.Provider value={{ selectUser, toggleDataSource, data }}>
       {children}
     </DataContext.Provider>
   );
 };
 
-export const useData = () => useContext(DataContext);
+export default DataProvider;
