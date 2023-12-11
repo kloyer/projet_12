@@ -1,11 +1,14 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { Component, createContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// Creating a context for data sharing across components
 const DataContext = createContext();
 
-export const useData = () => useContext(DataContext);
+// Custom hook for easy access to the DataContext
+export const useData = () => React.useContext(DataContext);
 
+// Function to normalize user data by modifying score property
 const normalizeUserData = (userData) => {
   if (userData.hasOwnProperty('score')) {
     userData.todayScore = userData.score;
@@ -14,15 +17,50 @@ const normalizeUserData = (userData) => {
   return userData;
 };
 
-export const DataProvider = ({ children }) => {
-  const [data, setData] = useState({});
-  const [useApi, setUseApi] = useState(true);
-  const [userId, setUserId] = useState(null);
-  const navigate = useNavigate();
+// Base class component handling data fetching and state
+class DataProviderBase extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {}, // Holds fetched data
+      useApi: true, // Toggle between API and local data
+      userId: null, // Current user ID
+    };
+  }
 
-  const fetchData = async (endpoint, localPath) => {
+  // Fetch data after the component mounts
+  componentDidMount() {
+    this.fetchDataIfNeeded();
+  }
+
+  // Re-fetch data when userId or useApi state changes
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.userId !== prevState.userId || this.state.useApi !== prevState.useApi) {
+      this.fetchDataIfNeeded();
+    }
+  }
+
+  // Conditional data fetching based on userId
+  fetchDataIfNeeded = () => {
+    const { userId, useApi } = this.state;
+    if (userId) {
+      Promise.all([
+        this.fetchUserBasicInfo(userId),
+        this.fetchUserActivity(userId),
+        this.fetchUserAverageSessions(userId),
+        this.fetchUserPerformance(userId)
+      ]).then(([basicInfo, activity, averageSessions, performance]) => {
+        this.setState({ data: { basicInfo, activity, averageSessions, performance } });
+      }).catch(error => {
+        console.error("Failed to fetch data:", error);
+      });
+    }
+  }
+
+  // Generic method to fetch data from API or local
+  fetchData = async (endpoint, localPath) => {
     let responseData;
-    if (useApi) {
+    if (this.state.useApi) {
       const response = await axios.get(`http://localhost:3000/${endpoint}`);
       responseData = response.data;
     } else {
@@ -33,43 +71,40 @@ export const DataProvider = ({ children }) => {
       responseData.data = normalizeUserData(responseData.data);
     }
     return responseData;
+  }
+
+  // Fetch methods for different user data aspects
+  fetchUserBasicInfo = (id) => this.fetchData(`user/${id}`, `user_${id}.json`);
+  fetchUserActivity = (id) => this.fetchData(`user/${id}/activity`, `user_${id}_activity.json`);
+  fetchUserAverageSessions = (id) => this.fetchData(`user/${id}/average-sessions`, `user_${id}_average-sessions.json`);
+  fetchUserPerformance = (id) => this.fetchData(`user/${id}/performance`, `user_${id}_performance.json`);
+
+  // Method to toggle data source between API and local data
+  toggleDataSource = () => {
+    this.setState(prevState => ({ useApi: !prevState.useApi }));
   };
 
-  const fetchUserBasicInfo = (id) => fetchData(`user/${id}`, `user_${id}.json`);
-  const fetchUserActivity = (id) => fetchData(`user/${id}/activity`, `user_${id}_activity.json`);
-  const fetchUserAverageSessions = (id) => fetchData(`user/${id}/average-sessions`, `user_${id}_average-sessions.json`);
-  const fetchUserPerformance = (id) => fetchData(`user/${id}/performance`, `user_${id}_performance.json`);
-
-  useEffect(() => {
-    if (userId) {
-      Promise.all([
-        fetchUserBasicInfo(userId),
-        fetchUserActivity(userId),
-        fetchUserAverageSessions(userId),
-        fetchUserPerformance(userId)
-      ]).then(([basicInfo, activity, averageSessions, performance]) => {
-        setData({ basicInfo, activity, averageSessions, performance });
-      }).catch(error => {
-        console.error("Failed to fetch data:", error);
-      });
-    }
-  }, [userId, useApi]);
-
-  const toggleDataSource = () => {
-    setUseApi(!useApi);
-    console.log(`Data source will be toggled. Current source: ${useApi ? 'API' : 'local JSON'}.`);
+  // Method to set the current user ID and navigate to user's page
+  selectUser = (id) => {
+    this.setState({ userId: id });
+    this.props.navigate(`/user/${id}`);
   };
 
-  const selectUser = (id) => {
-    setUserId(id);
-    navigate(`/user/${id}`);
-  };
+  // Render method providing the context value to children
+  render() {
+    return (
+      <DataContext.Provider value={{ selectUser: this.selectUser, toggleDataSource: this.toggleDataSource, data: this.state.data }}>
+        {this.props.children}
+      </DataContext.Provider>
+    );
+  }
+}
 
-  return (
-    <DataContext.Provider value={{ selectUser, toggleDataSource, data }}>
-      {children}
-    </DataContext.Provider>
-  );
-};
+// Functional wrapper component to utilize useNavigate hook
+function DataProvider(props) {
+  const navigate = useNavigate();
+
+  return <DataProviderBase {...props} navigate={navigate} />;
+}
 
 export default DataProvider;
