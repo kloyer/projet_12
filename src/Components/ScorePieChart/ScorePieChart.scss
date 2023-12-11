@@ -1,7 +1,25 @@
 .score__container {
     position: relative;
-    width: 258px;
-    height: 258px;
     background: #FBFBFB;
     border-radius: 5px;
+    width: 200px;
+    height: 200px;
+
+    .score__header {
+        position: absolute;
+    }
+
+    .pie-text {
+        font-size: large;
+        color: #ff0000;
+    }
+
+    text {
+        font-weight: 700;
+    }
+
+    tspan {
+        font-weight: 500;
+        color: #74798C;   
+    }
 }

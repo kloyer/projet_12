@@ -14,27 +14,35 @@ export function ScorePieChart({ pieChartInfos }) {
 
     const COLORS = ['#FF0000', '#EAEAEA'];
     const score = Math.round(pieChartInfos.data.todayScore * 100);
-    console.log('score', score, "%")
 
     return (
         <div className="score__container">
+          <p className="score__header">Score</p>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Text>
-                Score
-              </Text>
+              <text
+                x="50%"
+                y="45%"
+                dy={0}
+                textAnchor="middle"
+                dominantBaseline="central"
+                className="pie-text"
+              >
+                {score}%<tspan dy={18} dx={-50}>de votre</tspan>
+                <tspan dy={20} x="50%" className="pie-text-small">objectif</tspan>
+              </text>
               <Pie
                 data={data}
                 dataKey="value"
                 innerRadius={70}
+                outerRadius={80}
                 startAngle={90}
+                endAngle={450}
+                blendStroke
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
-              <Text>
-                {score}
-              </Text>
               </Pie>
             </PieChart>
           </ResponsiveContainer>

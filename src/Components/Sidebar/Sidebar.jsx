@@ -8,13 +8,15 @@ import iconDumbBell from '../../assets/icon4.png';
 export function Sidebar({ chartActivity }) {
   
     return (
-        <div class="sidebar__container">
-            <nav>
+        <div className="sidebar__container">
+            <nav className="sidebar__nav">
                 <img src={iconMeditation} alt="Meditation" />
                 <img src={iconSwiming} alt="Swiming" />
                 <img src={iconBike} alt="Bike" />
                 <img src={iconDumbBell} alt="Dumb-Bell" />
-                <div>Copyright, SportSee 2020</div>
+                <div className="sidebar__copyright">
+                    <p>Copyright, SportSee 2020</p>
+                </div>
             </nav>
         </div>
     );

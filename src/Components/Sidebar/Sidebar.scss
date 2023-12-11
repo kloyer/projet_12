@@ -2,22 +2,26 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 100vh;
+    height: 100%;
     width: 100px; 
     background-color: #020203;
 
-    // Définition des styles pour les icônes et les éléments de navigation
-    nav {
+    .sidebar__nav {
         display: flex;
         flex-direction: column;
-        align-items: center; // centrer les icônes si nécessaire
+        width: 100%;
         height: 100%;
-        padding-top: 20px; // ajustez l'espacement au-dessus selon la maquette
+        justify-content: center;
+        align-items: center;
 
-        img {
-            margin-bottom: 30px; // espacement entre les icônes
-            width: 48px; // ou la taille souhaitée
-            height: auto;
+        .sidebar__copyright {
+            transform: rotate(-90deg);
         }
     }
+
+        img {
+            margin-bottom: 30px;
+            width: 48px;
+            height: auto;
+        }
 }

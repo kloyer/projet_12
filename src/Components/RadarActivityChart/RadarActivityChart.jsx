@@ -28,10 +28,9 @@ export function RadarActivityChart({ chartActivity }) {
     <div class="radar-activity__container">
     <ResponsiveContainer width="100%" height="100%">
 			<RadarChart cx='50%' cy='50%' outerRadius='65%' data={chartData}>
-				<PolarGrid gridType="polygon" />
+				<PolarGrid gridType="polygon" radialLines={false}/>
 				<PolarAngleAxis	dataKey="activity" stroke='white' tickLine={false}  tick={{ fontSize: 10 }}/>
 				<Radar dataKey='value' stroke='#FF0101'	fill='#FF0101' fillOpacity={0.7} />
-        <Tooltip />
 			</RadarChart>
     </ResponsiveContainer>
     </div>
