@@ -38,20 +38,20 @@ function UserStatsPage() {
         <Sidebar />
         <Header />
       <div className="main-content">
-        <div class="user-greeting">
+        <div className="user-greeting">
           <h1>Bonjour <span>{firstName}</span></h1>
           <p>Félicitations ! Vous avez explosé vos objectifs hier 👏</p>
         </div>
-        <div class="datas-container">
-          <div class="datas-container__left-content">
+        <div className="datas-container">
+          <div className="datas-container__left-content">
             <DailyActivityChart dailyActivity={activityData || []} />
-            <div class="square-charts">
+            <div className="square-charts">
               <AverageSessionChart averageSessionActivity={averageSessionData || []}/>
               <RadarChart chartActivity={performanceData || []}/>
               <ScorePieChart pieChartInfos={basicInfo || []}/>
             </div>
           </div>
-          <div class="datas-container__right-content">
+          <div className="datas-container__right-content">
             <div className="nutrition-stats">
               <NutrientStat amount={data.basicInfo?.data.keyData.calorieCount + "kCal"} nutrient="Calories" iconSrc={caloriesIcon} />
               <NutrientStat amount={data.basicInfo?.data.keyData.proteinCount + "g"} nutrient="Proteins" iconSrc={proteinsIcon} />

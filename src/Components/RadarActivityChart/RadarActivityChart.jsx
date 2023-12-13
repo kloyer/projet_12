@@ -25,7 +25,7 @@ export function RadarActivityChart({ chartActivity }) {
   }));
 
   return (
-    <div class="radar-activity__container">
+    <div className="radar-activity__container">
     <ResponsiveContainer width="100%" height="100%">
 			<RadarChart cx='50%' cy='50%' outerRadius='65%' data={chartData}>
 				<PolarGrid gridType="polygon" radialLines={false}/>

@@ -22,7 +22,7 @@ const dayToLetter = (day) => {
   };  
 
     return (
-        <div class='average-session__container'>
+        <div className='average-session__container'>
           <ResponsiveContainer width="100%" height="100%">
           <LineChart 
             data={averageSessionActivity.sessions} 

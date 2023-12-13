@@ -1,19 +1,24 @@
 import React from "react";
-import { ResponsiveContainer, PieChart, Pie, Cell, Text } from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import './ScorePieChart.scss'
 
 export function ScorePieChart({ pieChartInfos }) {
+    // Check if pieChartInfos or pieChartInfos.data is undefined
     if (!pieChartInfos || !pieChartInfos.data) {
         return <div>Loading...</div>;
     }
 
+    // Check which score key exists and use it
+    const scoreKey = pieChartInfos.data.todayScore !== undefined ? 'todayScore' : 'score';
+    const scoreValue = pieChartInfos.data[scoreKey];
+
     const data = [
-        { name: 'Score', value: pieChartInfos.data.todayScore },
-        { name: 'Remaining', value: 1 - pieChartInfos.data.todayScore },
+        { name: 'Score', value: scoreValue },
+        { name: 'Remaining', value: 1 - scoreValue },
     ];
 
     const COLORS = ['#FF0000', '#EAEAEA'];
-    const score = Math.round(pieChartInfos.data.todayScore * 100);
+    const score = Math.round(scoreValue * 100);
 
     return (
         <div className="score__container">

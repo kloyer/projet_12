@@ -16,7 +16,6 @@ export function DailyActivityChart({ dailyActivity }) {
   }
 
   const CustomTooltip = ({ active, payload, label }) => {
-    console.log(payload);
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
@@ -30,10 +29,10 @@ export function DailyActivityChart({ dailyActivity }) {
   };
 
   return (
-    <div class="daily-activity">
-      <div class="daily-activity__header">
-        <div class="daily-activity__title">Activité quotidienne</div>
-        <div class="daily-activity__infos">
+    <div className="daily-activity">
+      <div className="daily-activity__header">
+        <div className="daily-activity__title">Activité quotidienne</div>
+        <div className="daily-activity__infos">
           <p><span className="dot weight-dot"></span>Poids (kg)</p>
           <p><span className="dot calories-dot"></span>Calories brûlées (kCal)</p>
         </div>
