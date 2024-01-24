@@ -5,9 +5,10 @@ import iconSwiming from '../../assets/icon2.png';
 import iconBike from '../../assets/icon3.png';
 import iconDumbBell from '../../assets/icon4.png';
 
+// Defining the Sidebar functional component
 export function Sidebar({ chartActivity }) {
-  
     return (
+        // Container for the sidebar
         <div className="sidebar__container">
             <nav className="sidebar__nav">
                 <img src={iconMeditation} alt="Meditation" />
@@ -20,7 +21,6 @@ export function Sidebar({ chartActivity }) {
             </nav>
         </div>
     );
-  }
+}
   
-  
-  export default Sidebar;
+export default Sidebar;

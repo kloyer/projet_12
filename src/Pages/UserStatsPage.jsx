@@ -1,9 +1,8 @@
-// UserStatsPage.jsx
 import React from 'react';
 import { useData } from '../Contexts/DataProvider';
 import { useParams } from 'react-router-dom';
 import DailyActivityChart from '../Components/DailyActivityChart/DailyActivityChart';
-import RadarChart from '../Components/RadarActivityChart/RadarActivityChart'
+import RadarChart from '../Components/RadarActivityChart/RadarActivityChart';
 import AverageSessionChart from '../Components/AverageSessionChart/AverageSessionChart';
 import ScorePieChart from '../Components/ScorePieChart/ScorePieChart';
 import Header from '../Components/Header/Header';
@@ -14,18 +13,22 @@ import proteinsIcon from '../assets/proteinsIcon.png';
 import carbsIcon from '../assets/carbsIcon.png';
 import fatsIcon from '../assets/fatsIcon.png';
 
+// Defining the UserStatsPage functional component
 function UserStatsPage() {
-  const { userId } = useParams();
-  const { data, isLoading, error } = useData();
+  const { userId } = useParams(); // Retrieving the user ID from URL parameters
+  const { data, isLoading, error } = useData(); // Using the custom hook to access shared data
 
+  // Handling loading state
   if (isLoading || !data) {
     return <div>Loading user data...</div>;
   }
 
+  // Handling error state
   if (error) {
     return <div>Error fetching user data: {error.message}</div>;
   }
 
+  // Extracting data for different components
   const userInfo = data.basicInfo?.data?.userInfos;
   const activityData = data.activity?.data;
   const averageSessionData = data.averageSessions?.data;
@@ -33,10 +36,11 @@ function UserStatsPage() {
   const basicInfo = data.basicInfo;
   const firstName = userInfo?.firstName;
 
+  // Returning the JSX for the UserStatsPage
   return (
     <div>
-        <Sidebar />
-        <Header />
+      <Sidebar />
+      <Header />
       <div className="main-content">
         <div className="user-greeting">
           <h1>Bonjour <span>{firstName}</span></h1>
@@ -53,6 +57,7 @@ function UserStatsPage() {
           </div>
           <div className="datas-container__right-content">
             <div className="nutrition-stats">
+              {/* NutrientStat components for displaying key data like calories, proteins, etc. */}
               <NutrientStat amount={data.basicInfo?.data.keyData.calorieCount + "kCal"} nutrient="Calories" iconSrc={caloriesIcon} />
               <NutrientStat amount={data.basicInfo?.data.keyData.proteinCount + "g"} nutrient="Proteins" iconSrc={proteinsIcon} />
               <NutrientStat amount={data.basicInfo?.data.keyData.carbohydrateCount + "g"} nutrient="Carbs" iconSrc={carbsIcon} />

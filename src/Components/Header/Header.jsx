@@ -2,11 +2,15 @@ import React from 'react';
 import './Header.scss'
 import logo from "../../assets/logo.png";
 
+// Defining the Header functional component
 export function Header() {
     return (
         <header className="header">
+            {/* Displaying the logo */}
             <img src={logo} alt="SportSee" className="header__logo" />
+            {/* Navigation menu */}
             <nav className="header__nav">
+                {/* List of placeholder navigation links */}
                 <ul className="header__nav-list">
                     <li className="header__nav-item"><a href="#" className="header__nav-link">Accueil</a></li>
                     <li className="header__nav-item"><a href="#" className="header__nav-link">Profil</a></li>
@@ -18,5 +22,4 @@ export function Header() {
     );
 }
   
-  
-  export default Header;
+export default Header;
