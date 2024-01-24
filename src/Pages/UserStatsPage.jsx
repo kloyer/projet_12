@@ -1,6 +1,5 @@
 import React from 'react';
 import { useData } from '../Contexts/DataProvider';
-import { useParams } from 'react-router-dom';
 import DailyActivityChart from '../Components/DailyActivityChart/DailyActivityChart';
 import RadarChart from '../Components/RadarActivityChart/RadarActivityChart';
 import AverageSessionChart from '../Components/AverageSessionChart/AverageSessionChart';
@@ -15,7 +14,6 @@ import fatsIcon from '../assets/fatsIcon.png';
 
 // Defining the UserStatsPage functional component
 function UserStatsPage() {
-  const { userId } = useParams(); // Retrieving the user ID from URL parameters
   const { data, isLoading, error } = useData(); // Using the custom hook to access shared data
 
   // Handling loading state
