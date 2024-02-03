@@ -1,3 +1,4 @@
+// src/components/RadarActivityChart.jsx
 import React from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
 import './RadarActivityChart.scss'
@@ -18,12 +19,8 @@ export function RadarActivityChart({ chartActivity }) {
   if (!chartActivity || !chartActivity.data) {
     return <div>Loading...</div>;
   }
-
-  // Transforming the data to match the format expected by the RadarChart
-  const chartData = chartActivity.data.map(activity => ({
-    activity: ACTIVITY_KIND_MAPPING[activity.kind - 1], // Adjusting the kind index to match the mapping
-    value: activity.value,
-  }));
+  
+  const chartData = chartActivity.data;
 
   // Render the radar chart
   return (

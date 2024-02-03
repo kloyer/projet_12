@@ -1,34 +1,45 @@
+// src/contexts/models/UserPerformanceModel.jsx
+
 import axios from 'axios';
 
-// Defining the UserPerformanceModel class
+const ACTIVITY_KIND_MAPPING = [
+  "Intensité",
+  "Vitesse",
+  "Force",
+  "Endurance",
+  "Energie",
+  "Cardio",
+];
+
 export default class UserPerformanceModel {
-  // Constructor for initializing the class with the useApi flag
   constructor(useApi) {
-    this.useApi = useApi; // Determines if data should be fetched from an API or local files
+    this.useApi = useApi;
   }
 
-  // Asynchronous method to fetch performance data for a specific user
   async fetchUserPerformance(userId) {
-    // API endpoint for fetching user's performance data
     const endpoint = `user/${userId}/performance`;
-    // Path for local data file corresponding to the user's performance data
     const localPath = `user_${userId}_performance.json`;
     let responseData;
 
-    // Checking if the API should be used
     if (this.useApi) {
-      // Fetching data from the API using axios
       const response = await axios.get(`http://localhost:3000/${endpoint}`);
-      // Extracting data from the API response
       responseData = response.data;
     } else {
-      // Fetching local data using dynamic import
       const localData = await import(`../../datas/${localPath}`);
-      // Extracting data from the local data file
       responseData = localData.default;
     }
 
-    // Returning the fetched data
+  // Check if responseData.data is an array before calling map
+  if (Array.isArray(responseData.data)) {
+    responseData.data = responseData.data.map(activity => ({
+      activity: ACTIVITY_KIND_MAPPING[activity.kind - 1],
+      value: activity.value,
+    }));
+  } else {
+    // Handle the case where responseData.data is not an array
+    console.error('responseData.data is not an array', responseData.data);
+  }
+
     return responseData;
   }
 }

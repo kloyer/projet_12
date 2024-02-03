@@ -1,3 +1,4 @@
+// src/contexts/models/UserActivityModel.jsx
 import axios from 'axios';
 
 // Defining the UserActivityModel class

@@ -1,3 +1,4 @@
+// src/components/DailyActivityChart.jsx
 import './DailyActivityChart.scss';
 import React from "react";
 import {

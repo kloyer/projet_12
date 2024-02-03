@@ -1,3 +1,4 @@
+// src/contexts/models/BasicInfoModel.jsxq
 import axios from 'axios';
 
 // Defining the BasicInfoModel class
@@ -18,11 +19,13 @@ export default class BasicInfoModel {
     // Check if API should be used
     if (this.useApi) {
       // Fetching data from API using axios
+      console.log("Fetching User Activity from API");
       const response = await axios.get(`http://localhost:3000/${endpoint}`);
       // Extracting data from the API response
       responseData = response.data;
     } else {
       // Fetching local data using dynamic import
+      console.log("Fetching User Activity from Mocked Data");
       const localData = await import(`../../datas/${localPath}`);
       // Extracting data from the local data file
       responseData = localData.default;

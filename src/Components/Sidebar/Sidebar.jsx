@@ -1,3 +1,4 @@
+// src/components/Sidebar.jsx
 import React from 'react';
 import './Sidebar.scss';
 import iconMeditation from '../../assets/icon1.png';

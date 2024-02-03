@@ -1,3 +1,4 @@
+// src/contexts/DataProvider.jsx
 import React, { Component, createContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BasicInfoModel from './Models/BasicInfoModel';
@@ -36,7 +37,22 @@ class DataProviderBase extends Component {
 
   // Lifecycle method to re-fetch data when certain state variables change
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.userId !== prevState.userId || this.state.useApi !== prevState.useApi) {
+    // Check if useApi state has changed
+    if (prevState.useApi !== this.state.useApi) {
+      console.log("useApi state changed. Reinitializing models with new useApi value:", this.state.useApi);
+
+      // Reinitialize models with the new useApi state
+      this.basicInfoModel = new BasicInfoModel(this.state.useApi);
+      this.userActivityModel = new UserActivityModel(this.state.useApi);
+      this.userAverageSessionsModel = new UserAverageSessionsModel(this.state.useApi);
+      this.userPerformanceModel = new UserPerformanceModel(this.state.useApi);
+
+      // Refetch data with new models
+      this.fetchDataIfNeeded();
+    }
+
+    // Check if userId has changed, if so, fetch data
+    if (this.state.userId !== prevState.userId) {
       this.fetchDataIfNeeded();
     }
   }
@@ -61,7 +77,10 @@ class DataProviderBase extends Component {
 
   // Method to toggle the data source between API and local data
   toggleDataSource = () => {
-    this.setState(prevState => ({ useApi: !prevState.useApi }));
+    this.setState(prevState => {
+      console.log("Toggling data source. Current useApi:", !prevState.useApi);
+      return { useApi: !prevState.useApi };
+    });
   };
 
   // Method to set the current user ID and navigate to the user's page
@@ -72,8 +91,16 @@ class DataProviderBase extends Component {
 
   // Rendering the provider with context value
   render() {
+
+    const contextValue = {
+      selectUser: this.selectUser,
+      toggleDataSource: this.toggleDataSource,
+      data: this.state.data,
+      useApi: this.state.useApi,  // Add this line to pass the useApi state
+    };
+
     return (
-      <DataContext.Provider value={{ selectUser: this.selectUser, toggleDataSource: this.toggleDataSource, data: this.state.data }}>
+      <DataContext.Provider value={contextValue}>
         {this.props.children}
       </DataContext.Provider>
     );

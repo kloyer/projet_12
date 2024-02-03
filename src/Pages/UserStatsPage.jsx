@@ -1,3 +1,4 @@
+// src/pages/UserStatsPage.jsx
 import React from 'react';
 import { useData } from '../Contexts/DataProvider';
 import DailyActivityChart from '../Components/DailyActivityChart/DailyActivityChart';
@@ -33,6 +34,16 @@ function UserStatsPage() {
   const performanceData = data.performance?.data;
   const basicInfo = data.basicInfo;
   const firstName = userInfo?.firstName;
+
+  // Checking if any of the necessary datasets is missing or empty
+  const isDataMissing = !activityData || !activityData.sessions || activityData.sessions.length === 0
+                        || !averageSessionData || !averageSessionData.sessions || averageSessionData.sessions.length === 0
+                        || !performanceData || !performanceData.data || performanceData.data.length === 0
+                        || !basicInfo || !basicInfo.data || Object.keys(basicInfo.data).length === 0;
+
+  if (isDataMissing) {
+    return <div className="page-error">No sufficient data available to display the page.</div>;
+  }
 
   // Returning the JSX for the UserStatsPage
   return (

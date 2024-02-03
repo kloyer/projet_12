@@ -1,3 +1,4 @@
+// src/components/NutrientStat.jsx
 import React from 'react';
 import './NutrientStat.scss';
 
